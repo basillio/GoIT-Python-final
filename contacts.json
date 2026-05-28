@@ -1,0 +1,80 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "name": "John Smith",
+    "phone1": "+1-555-0123",
+    "phone2": "+1-555-0124",
+    "email": "john.smith@example.com",
+    "birthday": "1990-05-28",
+    "note": "Important client. Prefers calls in the morning. Works in tech industry.",
+    "tags": [
+      "work",
+      "vip",
+      "client"
+    ],
+    "created": "2026-05-27T10:00:00.000000",
+    "modified": "2026-05-28T11:03:05.673206"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "name": "Sarah Johnson",
+    "phone1": "+1-555-0125",
+    "phone2": "",
+    "email": "sarah.j@example.com",
+    "birthday": "1988-05-29",
+    "note": "Project manager. Handles marketing campaigns.",
+    "tags": [
+      "work",
+      "marketing"
+    ],
+    "created": "2026-05-27T10:15:00.000000",
+    "modified": "2026-05-28T11:03:15.591210"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "name": "Michael Brown",
+    "phone1": "+1-555-0125",
+    "phone2": "+1-555-0127",
+    "email": "m.brown@example.com",
+    "birthday": "1992-05-30",
+    "note": "Best friend. Birthday coming up in July.",
+    "tags": [
+      "personal",
+      "friend"
+    ],
+    "created": "2026-05-27T10:30:00.000000",
+    "modified": "2026-05-28T11:26:53.897768"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440004",
+    "name": "Emily Davis",
+    "phone1": "+1-555-0128",
+    "phone2": "",
+    "email": "emily.davis@example.com",
+    "birthday": "1995-06-04",
+    "note": "Doctor. Emergency contact for health matters.",
+    "tags": [
+      "personal",
+      "doctor",
+      "emergency"
+    ],
+    "created": "2026-05-27T10:45:00.000000",
+    "modified": "2026-05-28T11:03:41.100755"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440005",
+    "name": "David Wilson",
+    "phone1": "+1-555-0129",
+    "phone2": "+1-555-0130",
+    "email": "d.wilson@company.com",
+    "birthday": "1987-01-05",
+    "note": "Team lead. Manages development team.",
+    "tags": [
+      "work",
+      "team",
+      "manager"
+    ],
+    "created": "2026-05-27T11:00:00.000000",
+    "modified": "2026-05-27T11:00:00.000000"
+  }
+]
