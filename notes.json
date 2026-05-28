@@ -1,0 +1,47 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "2026-05-28 09:00",
+    "note": "Meeting notes from team standup. Discussed Q2 roadmap and upcoming features. Action items: review design mockups, schedule architecture review.",
+    "tags": [
+      "meeting",
+      "work",
+      "important"
+    ],
+    "created": "2026-05-28T09:00:00",
+    "modified": "2026-05-28T09:00:00"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "title": "2026-05-27 14:30",
+    "note": "Project ideas: Build a task management app with real-time collaboration. Consider using WebSockets for live updates.",
+    "tags": [
+      "ideas",
+      "project",
+      "development"
+    ],
+    "created": "2026-05-27T14:30:00",
+    "modified": "2026-05-27T14:30:00"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "title": "2026-05-26 10:15",
+    "note": "Remember to follow up with John about the database migration. Need to schedule a call to discuss timeline and potential risks. and some added info",
+    "tags": [
+      "follow-up",
+      "urgent"
+    ],
+    "created": "2026-05-26T10:15:00",
+    "modified": "2026-05-28T13:11:12.687322"
+  },
+  {
+    "id": "82625951-3ad6-4837-974b-97e2641389be",
+    "title": "test",
+    "note": "werr",
+    "tags": [
+      "tets"
+    ],
+    "created": "2026-05-28T13:02:43.728747",
+    "modified": "2026-05-28T13:03:06.953969"
+  }
+]

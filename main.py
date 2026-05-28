@@ -1,15 +1,17 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from phonebook import Phonebook
+from notes import NotesManager
 from ui import PhonebookUI
 
 def main():
     root = tk.Tk()
     root.title("Assistant Phonebook")
-    root.geometry("900x700")
+    root.geometry("1100x750")
 
     phonebook = Phonebook("contacts.json")
-    app = PhonebookUI(root, phonebook)
+    notes_manager = NotesManager("notes.json")
+    app = PhonebookUI(root, phonebook, notes_manager)
 
     root.mainloop()
 
