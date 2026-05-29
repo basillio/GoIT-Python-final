@@ -38,6 +38,26 @@ class PhonebookUI:
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=12, pady=12)
 
+        # Common search frame at top
+        search_frame = ttk.LabelFrame(main_frame, text="Global Search", padding=10)
+        search_frame.pack(fill=tk.X, pady=(0, 10))
+
+        ttk.Label(search_frame, text="Search All:").pack(side=tk.LEFT, padx=5)
+        self.global_search_var = tk.StringVar()
+        self.global_search_var.trace("w", self.on_global_search_change)
+        self.search_entry = ttk.Entry(search_frame, textvariable=self.global_search_var, width=50)
+        self.search_entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
+
+        ttk.Button(search_frame, text="Clear", command=self.clear_global_search).pack(side=tk.LEFT, padx=5)
+
+        # Results frame
+        self.global_results_var = tk.StringVar(value="Ready")
+        ttk.Label(search_frame, textvariable=self.global_results_var, foreground="blue").pack(side=tk.LEFT, padx=5)
+
+        # Initialize dropdown window (will be created on demand)
+        self.search_dropdown_window = None
+        self.search_results_data = []
+
         # Create notebook (tabbed interface)
         self.notebook = ttk.Notebook(main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True)
@@ -54,23 +74,16 @@ class PhonebookUI:
 
     def setup_contacts_tab(self):
         """Setup the Contacts tab"""
-        # Top search frame
-        search_frame = ttk.LabelFrame(self.contacts_tab, text="Search Contacts", padding=10)
-        search_frame.pack(fill=tk.X, padx=10, pady=(10, 10))
+        # Button frame (removed search input)
+        button_frame = ttk.Frame(self.contacts_tab)
+        button_frame.pack(fill=tk.X, padx=10, pady=(10, 10))
 
-        ttk.Label(search_frame, text="Search:").pack(side=tk.LEFT, padx=5)
-        self.search_var = tk.StringVar()
-        self.search_var.trace("w", self.on_search_change)
-        search_entry = ttk.Entry(search_frame, textvariable=self.search_var, width=40)
-        search_entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
-
-        ttk.Button(search_frame, text="Clear", command=self.clear_search).pack(side=tk.LEFT, padx=5)
-        ttk.Button(search_frame, text="New Contact", command=self.new_contact).pack(side=tk.LEFT, padx=5)
-        ttk.Button(search_frame, text="Settings", command=self.open_settings).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="New Contact", command=self.new_contact).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Settings", command=self.open_settings).pack(side=tk.LEFT, padx=5)
 
         # Status label
         self.status_var = tk.StringVar(value="Ready")
-        ttk.Label(search_frame, textvariable=self.status_var, foreground="blue").pack(side=tk.RIGHT, padx=5)
+        ttk.Label(button_frame, textvariable=self.status_var, foreground="blue").pack(side=tk.RIGHT, padx=5)
 
         # Main content frame
         content_frame = ttk.Frame(self.contacts_tab)
@@ -98,9 +111,9 @@ class PhonebookUI:
 
         # Contact card preview
         card_frame = ttk.LabelFrame(right_frame, text="Contact Card Preview", padding=10)
-        card_frame.pack(fill=tk.X, pady=(0, 10))
+        card_frame.pack(fill=tk.X, pady=(0, 10), ipady=5)
 
-        self.card_text = tk.Text(card_frame, height=14, width=40, state=tk.DISABLED, font=("Courier", 8))
+        self.card_text = tk.Text(card_frame, height=10, width=40, state=tk.DISABLED, font=("Courier", 8))
         self.card_text.pack(fill=tk.BOTH, expand=True)
 
         # Contact details form
@@ -108,45 +121,45 @@ class PhonebookUI:
         details_frame.pack(fill=tk.BOTH, expand=True)
 
         # Name
-        ttk.Label(details_frame, text="Name:").grid(row=0, column=0, sticky=tk.W, pady=5)
+        ttk.Label(details_frame, text="Name:").grid(row=0, column=0, sticky=tk.W, pady=3)
         self.name_var = tk.StringVar()
-        ttk.Entry(details_frame, textvariable=self.name_var, width=30).grid(row=0, column=1, sticky=tk.EW, pady=5)
+        ttk.Entry(details_frame, textvariable=self.name_var, width=30).grid(row=0, column=1, sticky=tk.EW, pady=3)
         ttk.Label(details_frame, text="Example: John Doe", font=("Arial", 8), foreground="gray").grid(row=0, column=2, sticky=tk.W, padx=5)
 
         # Phone 1
-        ttk.Label(details_frame, text="Phone 1:").grid(row=1, column=0, sticky=tk.W, pady=5)
+        ttk.Label(details_frame, text="Phone 1:").grid(row=1, column=0, sticky=tk.W, pady=3)
         self.phone1_var = tk.StringVar()
-        ttk.Entry(details_frame, textvariable=self.phone1_var, width=30).grid(row=1, column=1, sticky=tk.EW, pady=5)
+        ttk.Entry(details_frame, textvariable=self.phone1_var, width=30).grid(row=1, column=1, sticky=tk.EW, pady=3)
         ttk.Label(details_frame, text="Example: +1 (555) 123-4567", font=("Arial", 8), foreground="gray").grid(row=1, column=2, sticky=tk.W, padx=5)
 
         # Phone 2
-        ttk.Label(details_frame, text="Phone 2:").grid(row=2, column=0, sticky=tk.W, pady=5)
+        ttk.Label(details_frame, text="Phone 2:").grid(row=2, column=0, sticky=tk.W, pady=3)
         self.phone2_var = tk.StringVar()
-        ttk.Entry(details_frame, textvariable=self.phone2_var, width=30).grid(row=2, column=1, sticky=tk.EW, pady=5)
+        ttk.Entry(details_frame, textvariable=self.phone2_var, width=30).grid(row=2, column=1, sticky=tk.EW, pady=3)
         ttk.Label(details_frame, text="Example: 555-1234", font=("Arial", 8), foreground="gray").grid(row=2, column=2, sticky=tk.W, padx=5)
 
         # Email
-        ttk.Label(details_frame, text="Email:").grid(row=3, column=0, sticky=tk.W, pady=5)
+        ttk.Label(details_frame, text="Email:").grid(row=3, column=0, sticky=tk.W, pady=3)
         self.email_var = tk.StringVar()
-        ttk.Entry(details_frame, textvariable=self.email_var, width=30).grid(row=3, column=1, sticky=tk.EW, pady=5)
+        ttk.Entry(details_frame, textvariable=self.email_var, width=30).grid(row=3, column=1, sticky=tk.EW, pady=3)
         ttk.Label(details_frame, text="Example: john@example.com", font=("Arial", 8), foreground="gray").grid(row=3, column=2, sticky=tk.W, padx=5)
 
         # Birthday
-        ttk.Label(details_frame, text="Birthday:").grid(row=4, column=0, sticky=tk.W, pady=5)
+        ttk.Label(details_frame, text="Birthday:").grid(row=4, column=0, sticky=tk.W, pady=3)
         self.birthday_var = tk.StringVar()
-        ttk.Entry(details_frame, textvariable=self.birthday_var, width=30).grid(row=4, column=1, sticky=tk.EW, pady=5)
+        ttk.Entry(details_frame, textvariable=self.birthday_var, width=30).grid(row=4, column=1, sticky=tk.EW, pady=3)
         ttk.Label(details_frame, text="Example: 1990-05-15", font=("Arial", 8), foreground="gray").grid(row=4, column=2, sticky=tk.W, padx=5)
 
         # Tags
-        ttk.Label(details_frame, text="Tags:").grid(row=5, column=0, sticky=tk.W, pady=5)
+        ttk.Label(details_frame, text="Tags:").grid(row=5, column=0, sticky=tk.W, pady=3)
         self.tags_var = tk.StringVar()
-        ttk.Entry(details_frame, textvariable=self.tags_var, width=30).grid(row=5, column=1, sticky=tk.EW, pady=5)
+        ttk.Entry(details_frame, textvariable=self.tags_var, width=30).grid(row=5, column=1, sticky=tk.EW, pady=3)
         ttk.Label(details_frame, text="Example: friend, work", font=("Arial", 8), foreground="gray").grid(row=5, column=2, sticky=tk.W, padx=5)
 
         # Note
-        ttk.Label(details_frame, text="Note:").grid(row=6, column=0, sticky=tk.NW, pady=5)
-        self.note_text = tk.Text(details_frame, height=5, width=30)
-        self.note_text.grid(row=6, column=1, columnspan=2, sticky=tk.EW, pady=5)
+        ttk.Label(details_frame, text="Note:").grid(row=6, column=0, sticky=tk.NW, pady=3)
+        self.note_text = tk.Text(details_frame, height=4, width=30)
+        self.note_text.grid(row=6, column=1, columnspan=2, sticky=tk.EW, pady=3)
 
         # Buttons frame
         button_frame = ttk.Frame(details_frame)
@@ -160,22 +173,15 @@ class PhonebookUI:
 
     def setup_notes_tab(self):
         """Setup the Notes tab"""
-        # Top search frame
-        search_frame = ttk.LabelFrame(self.notes_tab, text="Search Notes", padding=10)
-        search_frame.pack(fill=tk.X, padx=10, pady=(10, 10))
+        # Button frame (removed search input)
+        button_frame = ttk.Frame(self.notes_tab)
+        button_frame.pack(fill=tk.X, padx=10, pady=(10, 10))
 
-        ttk.Label(search_frame, text="Search:").pack(side=tk.LEFT, padx=5)
-        self.notes_search_var = tk.StringVar()
-        self.notes_search_var.trace("w", self.on_notes_search_change)
-        search_entry = ttk.Entry(search_frame, textvariable=self.notes_search_var, width=40)
-        search_entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
-
-        ttk.Button(search_frame, text="Clear", command=self.clear_notes_search).pack(side=tk.LEFT, padx=5)
-        ttk.Button(search_frame, text="New Note", command=self.new_note).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="New Note", command=self.new_note).pack(side=tk.LEFT, padx=5)
 
         # Status label
         self.notes_status_var = tk.StringVar(value="Ready")
-        ttk.Label(search_frame, textvariable=self.notes_status_var, foreground="blue").pack(side=tk.RIGHT, padx=5)
+        ttk.Label(button_frame, textvariable=self.notes_status_var, foreground="blue").pack(side=tk.RIGHT, padx=5)
 
         # Main content frame
         content_frame = ttk.Frame(self.notes_tab)
@@ -845,5 +851,180 @@ Notifications will appear when you open the application."""
                 return template
 
         return error_msg
+
+    def on_global_search_change(self, *args):
+        """Handle global search input changes across all tabs"""
+        search_term = self.global_search_var.get().strip()
+
+        if not search_term:
+            self.global_results_var.set("Ready")
+            self.close_search_dropdown()
+            return
+
+        # Search contacts
+        contacts_results = self.phonebook.search_contacts(search_term)
+
+        # Search notes
+        notes_results = self.notes_manager.search_notes(search_term)
+
+        # Format results display
+        contact_count = len(contacts_results)
+        notes_count = len(notes_results)
+
+        if contact_count == 0 and notes_count == 0:
+            self.global_results_var.set("No results found")
+            self.close_search_dropdown()
+            return
+
+        result_text = []
+        if contact_count > 0:
+            result_text.append(f"{contact_count} Contact{'s' if contact_count != 1 else ''}")
+        if notes_count > 0:
+            result_text.append(f"{notes_count} Note{'s' if notes_count != 1 else ''}")
+
+        self.global_results_var.set(" | ".join(result_text) + " found")
+
+        # Prepare results data
+        self.search_results_data = []
+
+        # Add contacts to results
+        for contact in contacts_results:
+            display_text = f"[Contact] {contact.get('name', 'Unknown')}"
+            if contact.get('phone'):
+                display_text += f" - {contact['phone']}"
+            self.search_results_data.append(('contact', contact, display_text))
+
+        # Add notes to results
+        for note in notes_results:
+            display_text = f"[Note] {note.get('title', 'Untitled')}"
+            self.search_results_data.append(('note', note, display_text))
+
+        # Show dropdown
+        self.show_search_dropdown()
+
+    def show_search_dropdown(self):
+        """Show floating dropdown window with search results"""
+        # Close existing dropdown if any
+        self.close_search_dropdown()
+
+        # Create floating window
+        self.search_dropdown_window = tk.Toplevel(self.root)
+        self.search_dropdown_window.wm_overrideredirect(True)
+        self.search_dropdown_window.attributes('-topmost', True)
+
+        # Create listbox in dropdown first to get proper height
+        item_count = min(len(self.search_results_data), 8)
+        self.search_results_listbox = tk.Listbox(
+            self.search_dropdown_window,
+            font=("Arial", 9),
+            bg="white",
+            relief=tk.SUNKEN,
+            bd=1,
+            height=item_count
+        )
+        self.search_results_listbox.pack(fill=tk.BOTH, expand=True)
+
+        # Populate listbox
+        for result_type, result_data, display_text in self.search_results_data:
+            self.search_results_listbox.insert(tk.END, display_text)
+
+        # Update to get proper dimensions
+        self.search_dropdown_window.update_idletasks()
+        self.search_entry.update_idletasks()
+
+        # Position dropdown below search entry
+        x = self.search_entry.winfo_rootx()
+        y = self.search_entry.winfo_rooty() + self.search_entry.winfo_height() + 2
+        width = self.search_entry.winfo_width()
+        height = self.search_results_listbox.winfo_reqheight()
+
+        self.search_dropdown_window.geometry(f"{width}x{height}+{x}+{y}")
+
+        # Bind events
+        self.search_results_listbox.bind('<<ListboxSelect>>', self.on_search_result_select)
+        self.search_dropdown_window.bind('<FocusOut>', self.on_search_dropdown_focus_out)
+        self.root.bind('<Button-1>', self.on_root_click)
+
+    def on_search_result_select(self, event):
+        """Handle search result selection from dropdown"""
+        selection = self.search_results_listbox.curselection()
+        if not selection:
+            return
+
+        index = selection[0]
+        result_type, result_data, _ = self.search_results_data[index]
+
+        if result_type == 'contact':
+            # Switch to Contacts tab
+            self.notebook.select(0)
+            self.current_contact_id = result_data.get('id')
+
+            # Display contact details
+            self.display_contact(result_data)
+            self.update_card_preview(result_data)
+
+            # Highlight in contacts list
+            self.refresh_contacts_list()
+            for i, contact_id in enumerate(self.contact_ids):
+                if contact_id == self.current_contact_id:
+                    self.contacts_listbox.selection_clear(0, tk.END)
+                    self.contacts_listbox.selection_set(i)
+                    self.contacts_listbox.see(i)
+                    break
+
+        elif result_type == 'note':
+            # Switch to Notes tab
+            self.notebook.select(1)
+            self.current_note_id = result_data.get('id')
+
+            # Display note details
+            self.display_note(result_data)
+
+            # Highlight in notes treeview
+            self.refresh_notes_list()
+            for tree_item_id, note_id in self.notes_tree_ids.items():
+                if note_id == self.current_note_id:
+                    self.notes_treeview.selection_set(tree_item_id)
+                    self.notes_treeview.see(tree_item_id)
+                    break
+
+        # Close dropdown
+        self.close_search_dropdown()
+
+    def on_search_dropdown_focus_out(self, event):
+        """Close dropdown when it loses focus"""
+        self.close_search_dropdown()
+
+    def on_root_click(self, event):
+        """Close dropdown when clicking outside of it"""
+        if self.search_dropdown_window:
+            if not self.is_point_in_widget(event.x_root, event.y_root, self.search_dropdown_window):
+                self.close_search_dropdown()
+
+    def is_point_in_widget(self, x, y, widget):
+        """Check if point is within widget bounds"""
+        try:
+            x1 = widget.winfo_rootx()
+            y1 = widget.winfo_rooty()
+            x2 = x1 + widget.winfo_width()
+            y2 = y1 + widget.winfo_height()
+            return x1 <= x <= x2 and y1 <= y <= y2
+        except:
+            return False
+
+    def close_search_dropdown(self):
+        """Close the search dropdown window"""
+        if self.search_dropdown_window:
+            try:
+                self.search_dropdown_window.destroy()
+            except:
+                pass
+            self.search_dropdown_window = None
+
+    def clear_global_search(self):
+        """Clear global search and reset results"""
+        self.global_search_var.set("")
+        self.global_results_var.set("Ready")
+        self.close_search_dropdown()
 
 
