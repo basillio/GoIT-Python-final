@@ -58,6 +58,35 @@ class PhonebookUI:
         self.search_dropdown_window = None
         self.search_results_data = []
 
+        # Birthday section
+        birthday_frame = ttk.LabelFrame(main_frame, text="Upcoming Birthdays", padding=10)
+        birthday_frame.pack(fill=tk.X, pady=(0, 10))
+
+        ttk.Label(birthday_frame, text="Days ahead (0-365):").pack(side=tk.LEFT, padx=5)
+        self.birthday_days_var = tk.StringVar(value="30")
+        birthday_entry = ttk.Entry(birthday_frame, textvariable=self.birthday_days_var, width=10)
+        birthday_entry.pack(side=tk.LEFT, padx=5)
+
+        ttk.Button(birthday_frame, text="Show Birthdays", command=self.show_upcoming_birthdays).pack(side=tk.LEFT, padx=5)
+
+        # Birthday results frame
+        self.birthday_results_var = tk.StringVar(value="")
+        ttk.Label(birthday_frame, textvariable=self.birthday_results_var, foreground="darkgreen").pack(side=tk.LEFT, padx=5)
+
+        # Create notebook (tabbed interface)
+        self.notebook = ttk.Notebook(main_frame)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
+
+        ttk.Button(search_frame, text="Clear", command=self.clear_global_search).pack(side=tk.LEFT, padx=5)
+
+        # Results frame
+        self.global_results_var = tk.StringVar(value="Ready")
+        ttk.Label(search_frame, textvariable=self.global_results_var, foreground="blue").pack(side=tk.LEFT, padx=5)
+
+        # Initialize dropdown window (will be created on demand)
+        self.search_dropdown_window = None
+        self.search_results_data = []
+
         # Create notebook (tabbed interface)
         self.notebook = ttk.Notebook(main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True)
@@ -1026,5 +1055,60 @@ Notifications will appear when you open the application."""
         self.global_search_var.set("")
         self.global_results_var.set("Ready")
         self.close_search_dropdown()
+
+    def show_upcoming_birthdays(self):
+        """Show contacts with birthdays within specified days"""
+        try:
+            days_input = self.birthday_days_var.get().strip()
+            if not days_input:
+                self.birthday_results_var.set("Please enter number of days")
+                return
+
+            days = int(days_input)
+            if days < 0 or days > 365:
+                self.birthday_results_var.set("Days must be between 0-365")
+                return
+
+            today = datetime.now().date()
+            upcoming = []
+
+            for contact in self.phonebook.contacts:
+                birthday_str = contact.get("birthday", "")
+                if not birthday_str:
+                    continue
+
+                try:
+                    birthday = datetime.strptime(birthday_str, "%Y-%m-%d").date()
+                    # Calculate next birthday
+                    next_birthday = birthday.replace(year=today.year)
+                    if next_birthday < today:
+                        next_birthday = next_birthday.replace(year=today.year + 1)
+
+                    days_until = (next_birthday - today).days
+
+                    if 0 <= days_until <= days:
+                        upcoming.append((contact.get("name", "Unknown"), days_until, birthday_str))
+                except:
+                    continue
+
+            if upcoming:
+                # Sort by days until birthday
+                upcoming.sort(key=lambda x: x[1])
+                result_text = f"{len(upcoming)} birthday(s): "
+                details = []
+                for name, days_until, birthday in upcoming:
+                    if days_until == 0:
+                        details.append(f"{name} (TODAY)")
+                    else:
+                        details.append(f"{name} ({days_until}d)")
+                result_text += " | ".join(details)
+                self.birthday_results_var.set(result_text)
+            else:
+                self.birthday_results_var.set("No birthdays in next " + days_input + " days")
+
+        except ValueError:
+            self.birthday_results_var.set("Invalid input - enter number 0-365")
+        except Exception as e:
+            self.birthday_results_var.set("Error: " + str(e))
 
 
