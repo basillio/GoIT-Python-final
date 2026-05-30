@@ -165,15 +165,15 @@ class PhonebookCLI:
         """Contact management menu"""
         while True:
             print("\n" + "-"*60)
-            print("Contact Management")
+            print("👤 Contact Management")
             print("-"*60)
-            print("\n  1. List all contacts")
-            print("  2. Add new contact")
-            print("  3. Search contacts")
-            print("  4. View contact details")
-            print("  5. Update contact")
-            print("  6. Delete contact")
-            print("  7. Back to main menu")
+            print("\n  1. 📋 List all contacts")
+            print("  2. ➕ Add new contact")
+            print("  3. 🔍 Search contacts")
+            print("  4. ℹ️ View contact details")
+            print("  5. 🔄 Update contact")
+            print("  6. ❌ Delete contact")
+            print("  7. ↩️ Back to main menu")
             print("\nEnter your choice (1-7): ", end="")
 
             choice = input().strip()
@@ -209,15 +209,15 @@ class PhonebookCLI:
         """Note management menu"""
         while True:
             print("\n" + "-"*60)
-            print("Note Management")
+            print("📝 Note Management")
             print("-"*60)
-            print("\n  1. List all notes")
-            print("  2. Add new note")
-            print("  3. Search notes")
-            print("  4. View note details")
-            print("  5. Update note")
-            print("  6. Delete note")
-            print("  7. Back to main menu")
+            print("\n  1. 📋 List all notes")
+            print("  2. ➕ Add new note")
+            print("  3. 🔍 Search notes")
+            print("  4. ℹ️ View note details")
+            print("  5. 🔄 Update note")
+            print("  6. ❌ Delete note")
+            print("  7. ↩️Back to main menu")
             print("\nEnter your choice (1-7): ", end="")
 
             choice = input().strip()
@@ -253,11 +253,11 @@ class PhonebookCLI:
         """Birthday management menu"""
         while True:
             print("\n" + "-"*60)
-            print("Birthday Management")
+            print("🎂 Birthday Management")
             print("-"*60)
-            print("\n  1. Show upcoming birthdays")
-            print("  2. Show today's birthdays")
-            print("  3. Back to main menu")
+            print("\n  1. 📅 Show upcoming birthdays")
+            print("  2. 🎉 Show today's birthdays")
+            print("  3. ↩️ Back to main menu")
             print("\nEnter your choice (1-3): ", end="")
 
             choice = input().strip()
