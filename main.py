@@ -35,7 +35,7 @@ def main():
         # Launch GUI mode
         root = tk.Tk()
         root.title("Assistant Phonebook")
-        root.geometry("1100x750")
+        root.geometry("1100x900")
 
         phonebook = Phonebook("contacts.json")
         notes_manager = NotesManager("notes.json")
