@@ -317,37 +317,37 @@ class PhonebookCLI:
                 continue
             break
 
-        phone1 = input("Phone 1: ").strip()
+        phone1 = input("Enter phone 1 (e.g., +1555012355): ").strip()
         while phone1 and not self.phonebook._is_valid_phone(phone1):
             print("ERROR: Phone 1 format invalid! Use digits, spaces, +, -, ()")
-            print("Example: +1-555-0123 or (555) 123-4567")
+            print("Example: +1-555-0123, (555) 123-4567, +1555012355")
             phone1 = input("Phone 1: ").strip()
 
-        phone2 = input("Phone 2: ").strip()
+        phone2 = input("Enter phone 2 (or press Enter to skip): ").strip()
         while phone2 and not self.phonebook._is_valid_phone(phone2):
             print("ERROR: Phone 2 format invalid! Use digits, spaces, +, -, ()")
             print("Example: +1-555-0123 or (555) 123-4567")
             phone2 = input("Phone 2: ").strip()
 
-        email = input("Email: ").strip()
+        email = input("Email (e.g., user@domain.com, or Enter to skip): ").strip()
         while email and not self.phonebook._is_valid_email(email):
             print("ERROR: Email format invalid!")
             print("Example: john@example.com")
             email = input("Email: ").strip()
 
-        birthday = input("Birthday (YYYY-MM-DD): ").strip()
+        birthday = input("Birthday (YYYY-MM-DD) (e.g., 1995-05-30, or Enter):").strip()
         while birthday and not self.phonebook._is_valid_birthday(birthday):
             print("ERROR: Birthday format invalid!")
             print("Example: 1990-05-15")
             birthday = input("Birthday (YYYY-MM-DD): ").strip()
 
-        tags_input = input("Tags (comma-separated): ").strip()
+        tags_input = input("Enter tags separated by commas (e.g., work, vip, friend): ").strip()
         while tags_input and not self.phonebook._is_valid_tags(tags_input):
             print("ERROR: Tags format invalid!")
             print("Example: work, friend, important")
             tags_input = input("Tags (comma-separated): ").strip()
 
-        note = input("Note: ").strip()
+        note = input("Note (any additional notes/details or Enter to skip): ").strip()
 
         class Args:
             pass
