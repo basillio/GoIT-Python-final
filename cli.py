@@ -176,7 +176,21 @@ class PhonebookCLI:
             print("  7. ↩️ Back to main menu")
             print("\nEnter your choice (1-7): ", end="")
 
-            choice = input().strip()
+            choice = input().strip().lower()
+            keyboard_fixes = {
+            "дшіе": "list",
+            "фвв": "add", 
+            "іуа": "search",
+            "мшуц": "view",
+            "увше": "update",
+            "вуд": "delete",
+            "ифсл": "back"
+        }
+            if not choice.isdigit():
+               for wrong_word, correct_cmd in keyboard_fixes.items():
+                 if wrong_word.startswith(choice) or choice.startswith(wrong_word):
+                    choice = correct_cmd
+                    break
 
             if choice == "1" or choice == "list":
                 self.list_contacts()
