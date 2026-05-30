@@ -87,5 +87,43 @@
     "note": "",
     "tags": [],
     "created": "2026-05-28T11:44:47.770844"
+  },
+  {
+    "id": "213bd637-5244-4482-afac-53d4e93dcd6b",
+    "name": "Test User",
+    "phone1": "555-9999",
+    "phone2": "",
+    "email": "test@example.com",
+    "birthday": "2000-06-15",
+    "note": "Added via CLI",
+    "tags": [
+      "test",
+      "cli"
+    ],
+    "created": "2026-05-29T23:05:22.300473"
+  },
+  {
+    "id": "cecb5c2d-fc50-442a-816b-2622a69f304f",
+    "name": "CLI-test",
+    "phone1": "234",
+    "phone2": "qw",
+    "email": "11",
+    "birthday": "qwert",
+    "note": "",
+    "tags": [
+      "test cli"
+    ],
+    "created": "2026-05-29T23:29:09.858325"
+  },
+  {
+    "id": "38ceea2c-9688-45df-9e7f-e43c9d96612e",
+    "name": "www",
+    "phone1": "111-222-333",
+    "phone2": "333-222-",
+    "email": "weqqw@wqweq.cc",
+    "birthday": "2000-11-11",
+    "note": "asdasddsasda",
+    "tags": [],
+    "created": "2026-05-30T13:36:00.240109"
   }
 ]
