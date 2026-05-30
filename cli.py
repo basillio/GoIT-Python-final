@@ -7,7 +7,9 @@ from phonebook import Phonebook
 from notes import NotesManager
 from utils import highlight_search_term
 
-
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8')
+    
 class PhonebookCLI:
     def __init__(self):
         self.phonebook = Phonebook("contacts.json")
@@ -130,13 +132,14 @@ class PhonebookCLI:
             print("Assistant Phonebook - Interactive Menu")
             print("="*60)
             print("\nMain Menu:")
-            print("  1. Contacts")
-            print("  2. Notes")
-            print("  3. Birthday Management")
-            print("  4. Global Search")
-            print("  5. Settings")
-            print("  6. Exit")
-            print("\nEnter your choice (1-6): ", end="")
+            print("  1. 👤 Contacts")
+            print("  2. 📝 Notes")
+            print("  3. 🎂 Birthday Management")
+            print("  4. 🔍 Global Search")
+            print("  5. ⚙️ Settings")
+            print("  6. 📊 Statistics")
+            print("  7. ❌ Exit")
+            print("\nEnter your choice (1-7): ", end="")
 
             choice = input().strip()
 
@@ -151,10 +154,12 @@ class PhonebookCLI:
             elif choice == "5":
                 self.settings_menu()
             elif choice == "6":
-                print("\nGoodbye!")
+                self.show_dashboard()
+            elif choice == "7":
+                print("\n👋 Goodbye!")
                 sys.exit(0)
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def contact_menu(self):
         """Contact management menu"""
@@ -198,7 +203,7 @@ class PhonebookCLI:
             elif choice == "7":
                 break
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def note_menu(self):
         """Note management menu"""
@@ -242,7 +247,7 @@ class PhonebookCLI:
             elif choice == "7":
                 break
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def birthday_menu(self):
         """Birthday management menu"""
@@ -266,7 +271,7 @@ class PhonebookCLI:
             elif choice == "3":
                 break
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def search_menu(self):
         """Global search menu"""
@@ -865,7 +870,26 @@ class PhonebookCLI:
             print(f"Notification days set to: {days}")
         except Exception as e:
             print(f"Error saving settings: {e}")
+    def show_dashboard(self):
+        print("\n" + "=" * 60)
+        print("📊 Database Statistics")
+        print("=" * 60)
 
+        contacts = self.phonebook.contacts
+        total_contacts = len(contacts)
+        contacts_with_birthdays = sum(1 for c in contacts if c.get('birthday', '').strip())
+
+        print(f"👤 CONTACTS:")
+        print(f"   • Total contacts: {total_contacts}")
+        print(f"   • Contacts with saved birthdays: {contacts_with_birthdays}")
+
+        notes = self.notes_manager.notes
+        total_notes = len(notes)
+
+        print(f"\n📝 NOTES:")
+        print(f"   • Total notes: {total_notes}")
+        print("=" * 60)
+        input("\nPress Enter to return to main menu...")
 
 if __name__ == "__main__":
     try:
