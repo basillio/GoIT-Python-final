@@ -178,23 +178,23 @@ class PhonebookCLI:
 
             choice = input().strip()
 
-            if choice == "1":
+            if choice == "1" or choice == "list":
                 self.list_contacts()
-            elif choice == "2":
+            elif choice == "2" or choice == "add":
                 self.add_contact_interactive()
-            elif choice == "3":
+            elif choice == "3" or choice == "search":
                 query = input("Enter search query: ").strip()
                 if query:
                     self.search_contacts(query)
-            elif choice == "4":
+            elif choice == "4" or choice == "view":
                 contact_id = input("Enter contact ID: ").strip()
                 if contact_id:
                     self.view_contact(contact_id)
-            elif choice == "5":
+            elif choice == "5" or choice == "update" or choice == "edit":
                 contact_id = input("Enter contact ID: ").strip()
                 if contact_id:
                     self.update_contact_interactive(contact_id)
-            elif choice == "6":
+            elif choice == "6" or choice == "delete" or choice == "remove":
                 contact_id = input("Enter contact ID: ").strip()
                 if contact_id:
                     confirm = input("Are you sure? (yes/no): ").strip().lower()
@@ -222,23 +222,23 @@ class PhonebookCLI:
 
             choice = input().strip()
 
-            if choice == "1":
+            if choice == "1" or choice == "list":
                 self.list_notes()
-            elif choice == "2":
+            elif choice == "2" or choice == "add" or choice == "create":
                 self.add_note_interactive()
-            elif choice == "3":
+            elif choice == "3" or choice == "search":
                 query = input("Enter search query: ").strip()
                 if query:
                     self.search_notes(query)
-            elif choice == "4":
+            elif choice == "4" or choice == "view":
                 note_id = input("Enter note ID: ").strip()
                 if note_id:
                     self.view_note(note_id)
-            elif choice == "5":
+            elif choice == "5" or choice == "update" or choice == "edit":
                 note_id = input("Enter note ID: ").strip()
                 if note_id:
                     self.update_note_interactive(note_id)
-            elif choice == "6":
+            elif choice == "6" or choice == "delete" or choice == "remove":
                 note_id = input("Enter note ID: ").strip()
                 if note_id:
                     confirm = input("Are you sure? (yes/no): ").strip().lower()
