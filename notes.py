@@ -65,17 +65,19 @@ class NotesManager:
         self.notes = [n for n in self.notes if n["id"] != note_id]
         return self.save_notes()
 
-    def search_notes(self, query: str) -> List[Dict]:
+    def search_notes(self, query: str, sort_by_tags_count: bool = False) -> List[Dict]:
         """Search notes by text or tags"""
         query = query.lower().strip()
         if not query:
-            return self.notes
-
-        results = []
+            return self.notes.copy()
+        else:
+            results = []
         for note in self.notes:
             if (query in note["note"].lower() or
                 any(query in tag.lower() for tag in note["tags"])):
                 results.append(note)
+        if sort_by_tags_count:
+            results.sort(key=lambda x: len(x.get("tags", [])), reverse=True)
         return results
 
     def get_note(self, note_id: str) -> Optional[Dict]:

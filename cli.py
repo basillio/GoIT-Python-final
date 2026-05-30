@@ -520,18 +520,6 @@ class PhonebookCLI:
         self.update_note(args)
 
 
-        if args.command == "contact":
-            self.handle_contact(args)
-        elif args.command == "note":
-            self.handle_note(args)
-        elif args.command == "search":
-            self.handle_global_search(args)
-        elif args.command == "birthday":
-            self.handle_birthday(args)
-        elif args.command == "settings":
-            self.handle_settings(args)
-        else:
-            parser.print_help()
 
     def handle_contact(self, args):
         if args.action == "list":
@@ -732,7 +720,9 @@ class PhonebookCLI:
             print("Failed to add note")
 
     def search_notes(self, query):
-        results = self.notes_manager.search_notes(query)
+        sort_choice = input("Sort results by tags count? (y/n, default: n): ").strip().lower()
+        sort_by_tags = True if sort_choice == 'y' else False
+        results = self.notes_manager.search_notes(query, sort_by_tags_count=sort_by_tags)
         if not results:
             print(f"No notes found for '{query}'")
             return
@@ -743,6 +733,7 @@ class PhonebookCLI:
             print(f"ID: {note['id']}")
             print(f"Title: {note['title']}")
             print(f"Content: {note['note'][:100]}..." if len(note['note']) > 100 else f"Content: {note['note']}")
+            print(f"Tags: {', '.join(note.get('tags', [])) or 'N/A'}")
             print("-" * 80)
 
     def view_note(self, note_id):
@@ -867,6 +858,8 @@ class PhonebookCLI:
 
 
 if __name__ == "__main__":
-    import os
-    cli = PhonebookCLI()
-    cli.run()
+    try:
+     cli = PhonebookCLI()
+     cli.run()
+    except KeyboardInterrupt:
+        print("\n\n👋 Application closed via shortcut. Goodbye!")
