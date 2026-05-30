@@ -1110,5 +1110,3 @@ Notifications will appear when you open the application."""
             self.birthday_results_var.set("Invalid input - enter number 0-365")
         except Exception as e:
             self.birthday_results_var.set("Error: " + str(e))
-
-
