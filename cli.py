@@ -187,13 +187,15 @@ class PhonebookCLI:
                 if query:
                     self.search_contacts(query)
             elif choice == "4" or choice == "view":
-                contact_id = input("Enter contact ID: ").strip()
+                contact_id = input("Enter contact ID or Name: ").strip()
                 if contact_id:
-                    self.view_contact(contact_id)
+                   found = next((c["id"] for c in self.phonebook.contacts if c["name"].lower().startswith(contact_id.lower())), contact_id)
+                self.view_contact(found)
             elif choice == "5" or choice == "update" or choice == "edit":
-                contact_id = input("Enter contact ID: ").strip()
+                contact_id = input("Enter contact ID or Name: ").strip()
                 if contact_id:
-                    self.update_contact_interactive(contact_id)
+                    found = next((c["id"] for c in self.phonebook.contacts if c["name"].lower().startswith(contact_id.lower())), contact_id)
+                    self.update_contact_interactive(found)
             elif choice == "6" or choice == "delete" or choice == "remove":
                 contact_id = input("Enter contact ID: ").strip()
                 if contact_id:
@@ -373,7 +375,7 @@ class PhonebookCLI:
         """Update contact interactively with validation"""
         contact = self.phonebook.get_contact(contact_id)
         if not contact:
-            print(f"Contact not found (ID: {contact_id})")
+            print(f"Contact not found (ID or Name: {contact_id})")
             return
 
         print("\n" + "-"*60)
@@ -658,7 +660,7 @@ class PhonebookCLI:
     def view_contact(self, contact_id):
         contact = self.phonebook.get_contact(contact_id)
         if not contact:
-            print(f"Contact not found (ID: {contact_id})")
+            print(f"Contact not found (ID or Name: {contact_id})")
             return
 
         print(f"\nContact Details:")
@@ -675,7 +677,7 @@ class PhonebookCLI:
     def update_contact(self, args):
         contact = self.phonebook.get_contact(args.contact_id)
         if not contact:
-            print(f"Contact not found (ID: {args.contact_id})")
+            print(f"Contact not found (ID or Name: {args.contact_id})")
             return
 
         name = args.name or contact['name']
