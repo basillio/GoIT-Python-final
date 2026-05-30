@@ -45,8 +45,11 @@ def main():
 
     elif mode == "cli":
         # Launch CLI mode
-        cli = PhonebookCLI()
-        cli.run()
+        try:
+            cli = PhonebookCLI()
+            cli.run()
+        except KeyboardInterrupt:
+            print("\n\n👋 Application closed via shortcut. Goodbye!")
     else:
         print("No mode selected. Exiting.")
         sys.exit(0)

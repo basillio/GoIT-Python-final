@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 from phonebook import Phonebook
 from notes import NotesManager
+from utils import highlight_search_term
 
 
 class PhonebookCLI:
@@ -701,7 +702,8 @@ class PhonebookCLI:
         for note in self.notes_manager.notes:
             print(f"ID: {note['id']}")
             print(f"Title: {note['title']}")
-            print(f"Content: {note['note'][:100]}..." if len(note['note']) > 100 else f"Content: {note['note']}")
+            highlighted_content = highlight_search_term(note['note'], query)
+            print(f"Content: {note['note'][:100]}..." if len(note['note']) > 100 else f"Content: {highlighted_content}")
             if note.get('tags'):
                 print(f"Tags: {', '.join(note['tags'])}")
             print("-" * 80)
@@ -730,10 +732,18 @@ class PhonebookCLI:
         print(f"\nSearch Results for '{query}' ({len(results)} found):")
         print("=" * 80)
         for note in results:
+            raw_content = note['note']
+            display_content = f"{raw_content[:100]}..." if len(raw_content) > 100 else raw_content
+            
+            raw_tags = ', '.join(note.get('tags', [])) or 'N/A'
+
+            highlighted_title = highlight_search_term(note['title'], query)
+            highlighted_content = highlight_search_term(display_content, query)
+            highlighted_tags = highlight_search_term(raw_tags, query)
             print(f"ID: {note['id']}")
-            print(f"Title: {note['title']}")
+            print(f"Title: {highlighted_title}")
             print(f"Content: {note['note'][:100]}..." if len(note['note']) > 100 else f"Content: {note['note']}")
-            print(f"Tags: {', '.join(note.get('tags', [])) or 'N/A'}")
+            print(f"Tags: {highlighted_tags}")
             print("-" * 80)
 
     def view_note(self, note_id):

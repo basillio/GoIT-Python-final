@@ -68,5 +68,7 @@ def highlight_search_term(text: str, term: str) -> str:
     """Highlight search term in text (case-insensitive)"""
     if not term:
         return text
+    replacement = f"\033[1;32m{term}\033[0m"
     pattern = re.compile(re.escape(term), re.IGNORECASE)
-    return pattern.sub(lambda m: f"[{m.group()}]", text)
+    return pattern.sub(lambda m: f"\033[1;32m{m.group(0)}\033[0m", text)
+1
