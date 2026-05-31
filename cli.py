@@ -5,8 +5,11 @@ import os
 from datetime import datetime
 from phonebook import Phonebook
 from notes import NotesManager
+from utils import highlight_search_term
 
-
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8')
+    
 class PhonebookCLI:
     def __init__(self):
         self.phonebook = Phonebook("contacts.json")
@@ -129,13 +132,14 @@ class PhonebookCLI:
             print("Assistant Phonebook - Interactive Menu")
             print("="*60)
             print("\nMain Menu:")
-            print("  1. Contacts")
-            print("  2. Notes")
-            print("  3. Birthday Management")
-            print("  4. Global Search")
-            print("  5. Settings")
-            print("  6. Exit")
-            print("\nEnter your choice (1-6): ", end="")
+            print("  1. 👤 Contacts")
+            print("  2. 📝 Notes")
+            print("  3. 🎂 Birthday Management")
+            print("  4. 🔍 Global Search")
+            print("  5. ⚙️ Settings")
+            print("  6. 📊 Statistics")
+            print("  7. ❌ Exit")
+            print("\nEnter your choice (1-7): ", end="")
 
             choice = input().strip()
 
@@ -150,45 +154,63 @@ class PhonebookCLI:
             elif choice == "5":
                 self.settings_menu()
             elif choice == "6":
-                print("\nGoodbye!")
+                self.show_dashboard()
+            elif choice == "7":
+                print("\n👋 Goodbye!")
                 sys.exit(0)
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def contact_menu(self):
         """Contact management menu"""
         while True:
             print("\n" + "-"*60)
-            print("Contact Management")
+            print("👤 Contact Management")
             print("-"*60)
-            print("\n  1. List all contacts")
-            print("  2. Add new contact")
-            print("  3. Search contacts")
-            print("  4. View contact details")
-            print("  5. Update contact")
-            print("  6. Delete contact")
-            print("  7. Back to main menu")
+            print("\n  1. 📋 List all contacts")
+            print("  2. ➕ Add new contact")
+            print("  3. 🔍 Search contacts")
+            print("  4. ℹ️ View contact details")
+            print("  5. 🔄 Update contact")
+            print("  6. ❌ Delete contact")
+            print("  7. ↩️ Back to main menu")
             print("\nEnter your choice (1-7): ", end="")
 
-            choice = input().strip()
+            choice = input().strip().lower()
+            keyboard_fixes = {
+            "дшіе": "list",
+            "фвв": "add", 
+            "іуа": "search",
+            "мшуц": "view",
+            "увше": "update",
+            "вуд": "delete",
+            "ифсл": "back"
+        }
+            if not choice.isdigit():
+               for wrong_word, correct_cmd in keyboard_fixes.items():
+                 if wrong_word.startswith(choice) or choice.startswith(wrong_word):
+                    choice = correct_cmd
+                    break
 
-            if choice == "1":
+            if choice == "1" or choice == "list":
                 self.list_contacts()
-            elif choice == "2":
+            elif choice == "2" or choice == "add":
                 self.add_contact_interactive()
-            elif choice == "3":
+            elif choice == "3" or choice == "search":
                 query = input("Enter search query: ").strip()
                 if query:
                     self.search_contacts(query)
-            elif choice == "4":
-                contact_id = input("Enter contact ID: ").strip()
+            elif choice == "4" or choice == "view":
+                contact_id = input("Enter contact ID or Name: ").strip()
                 if contact_id:
-                    self.view_contact(contact_id)
-            elif choice == "5":
-                contact_id = input("Enter contact ID: ").strip()
+                   found = next((c["id"] for c in self.phonebook.contacts if c["name"].lower().startswith(contact_id.lower())), contact_id)
+                self.view_contact(found)
+            elif choice == "5" or choice == "update" or choice == "edit":
+                contact_id = input("Enter contact ID or Name: ").strip()
                 if contact_id:
-                    self.update_contact_interactive(contact_id)
-            elif choice == "6":
+                    found = next((c["id"] for c in self.phonebook.contacts if c["name"].lower().startswith(contact_id.lower())), contact_id)
+                    self.update_contact_interactive(found)
+            elif choice == "6" or choice == "delete" or choice == "remove":
                 contact_id = input("Enter contact ID: ").strip()
                 if contact_id:
                     confirm = input("Are you sure? (yes/no): ").strip().lower()
@@ -197,42 +219,42 @@ class PhonebookCLI:
             elif choice == "7":
                 break
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def note_menu(self):
         """Note management menu"""
         while True:
             print("\n" + "-"*60)
-            print("Note Management")
+            print("📝 Note Management")
             print("-"*60)
-            print("\n  1. List all notes")
-            print("  2. Add new note")
-            print("  3. Search notes")
-            print("  4. View note details")
-            print("  5. Update note")
-            print("  6. Delete note")
-            print("  7. Back to main menu")
+            print("\n  1. 📋 List all notes")
+            print("  2. ➕ Add new note")
+            print("  3. 🔍 Search notes")
+            print("  4. ℹ️ View note details")
+            print("  5. 🔄 Update note")
+            print("  6. ❌ Delete note")
+            print("  7. ↩️Back to main menu")
             print("\nEnter your choice (1-7): ", end="")
 
             choice = input().strip()
 
-            if choice == "1":
+            if choice == "1" or choice == "list":
                 self.list_notes()
-            elif choice == "2":
+            elif choice == "2" or choice == "add" or choice == "create":
                 self.add_note_interactive()
-            elif choice == "3":
+            elif choice == "3" or choice == "search":
                 query = input("Enter search query: ").strip()
                 if query:
                     self.search_notes(query)
-            elif choice == "4":
+            elif choice == "4" or choice == "view":
                 note_id = input("Enter note ID: ").strip()
                 if note_id:
                     self.view_note(note_id)
-            elif choice == "5":
+            elif choice == "5" or choice == "update" or choice == "edit":
                 note_id = input("Enter note ID: ").strip()
                 if note_id:
                     self.update_note_interactive(note_id)
-            elif choice == "6":
+            elif choice == "6" or choice == "delete" or choice == "remove":
                 note_id = input("Enter note ID: ").strip()
                 if note_id:
                     confirm = input("Are you sure? (yes/no): ").strip().lower()
@@ -241,17 +263,17 @@ class PhonebookCLI:
             elif choice == "7":
                 break
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def birthday_menu(self):
         """Birthday management menu"""
         while True:
             print("\n" + "-"*60)
-            print("Birthday Management")
+            print("🎂 Birthday Management")
             print("-"*60)
-            print("\n  1. Show upcoming birthdays")
-            print("  2. Show today's birthdays")
-            print("  3. Back to main menu")
+            print("\n  1. 📅 Show upcoming birthdays")
+            print("  2. 🎉 Show today's birthdays")
+            print("  3. ↩️ Back to main menu")
             print("\nEnter your choice (1-3): ", end="")
 
             choice = input().strip()
@@ -265,7 +287,7 @@ class PhonebookCLI:
             elif choice == "3":
                 break
             else:
-                print("Invalid choice. Please try again.")
+                print("⚠️ Invalid choice. Please try again.")
 
     def search_menu(self):
         """Global search menu"""
@@ -317,37 +339,37 @@ class PhonebookCLI:
                 continue
             break
 
-        phone1 = input("Phone 1: ").strip()
+        phone1 = input("Enter phone 1 (e.g., +1555012355): ").strip()
         while phone1 and not self.phonebook._is_valid_phone(phone1):
             print("ERROR: Phone 1 format invalid! Use digits, spaces, +, -, ()")
-            print("Example: +1-555-0123 or (555) 123-4567")
+            print("Example: +1-555-0123, (555) 123-4567, +1555012355")
             phone1 = input("Phone 1: ").strip()
 
-        phone2 = input("Phone 2: ").strip()
+        phone2 = input("Enter phone 2 (or press Enter to skip): ").strip()
         while phone2 and not self.phonebook._is_valid_phone(phone2):
             print("ERROR: Phone 2 format invalid! Use digits, spaces, +, -, ()")
             print("Example: +1-555-0123 or (555) 123-4567")
             phone2 = input("Phone 2: ").strip()
 
-        email = input("Email: ").strip()
+        email = input("Email (e.g., user@domain.com, or Enter to skip): ").strip()
         while email and not self.phonebook._is_valid_email(email):
             print("ERROR: Email format invalid!")
             print("Example: john@example.com")
             email = input("Email: ").strip()
 
-        birthday = input("Birthday (YYYY-MM-DD): ").strip()
+        birthday = input("Birthday (YYYY-MM-DD) (e.g., 1995-05-30, or Enter):").strip()
         while birthday and not self.phonebook._is_valid_birthday(birthday):
             print("ERROR: Birthday format invalid!")
             print("Example: 1990-05-15")
             birthday = input("Birthday (YYYY-MM-DD): ").strip()
 
-        tags_input = input("Tags (comma-separated): ").strip()
+        tags_input = input("Enter tags separated by commas (e.g., work, vip, friend): ").strip()
         while tags_input and not self.phonebook._is_valid_tags(tags_input):
             print("ERROR: Tags format invalid!")
             print("Example: work, friend, important")
             tags_input = input("Tags (comma-separated): ").strip()
 
-        note = input("Note: ").strip()
+        note = input("Note (any additional notes/details or Enter to skip): ").strip()
 
         class Args:
             pass
@@ -367,7 +389,7 @@ class PhonebookCLI:
         """Update contact interactively with validation"""
         contact = self.phonebook.get_contact(contact_id)
         if not contact:
-            print(f"Contact not found (ID: {contact_id})")
+            print(f"Contact not found (ID or Name: {contact_id})")
             return
 
         print("\n" + "-"*60)
@@ -520,18 +542,6 @@ class PhonebookCLI:
         self.update_note(args)
 
 
-        if args.command == "contact":
-            self.handle_contact(args)
-        elif args.command == "note":
-            self.handle_note(args)
-        elif args.command == "search":
-            self.handle_global_search(args)
-        elif args.command == "birthday":
-            self.handle_birthday(args)
-        elif args.command == "settings":
-            self.handle_settings(args)
-        else:
-            parser.print_help()
 
     def handle_contact(self, args):
         if args.action == "list":
@@ -664,7 +674,7 @@ class PhonebookCLI:
     def view_contact(self, contact_id):
         contact = self.phonebook.get_contact(contact_id)
         if not contact:
-            print(f"Contact not found (ID: {contact_id})")
+            print(f"Contact not found (ID or Name: {contact_id})")
             return
 
         print(f"\nContact Details:")
@@ -681,7 +691,7 @@ class PhonebookCLI:
     def update_contact(self, args):
         contact = self.phonebook.get_contact(args.contact_id)
         if not contact:
-            print(f"Contact not found (ID: {args.contact_id})")
+            print(f"Contact not found (ID or Name: {args.contact_id})")
             return
 
         name = args.name or contact['name']
@@ -713,7 +723,8 @@ class PhonebookCLI:
         for note in self.notes_manager.notes:
             print(f"ID: {note['id']}")
             print(f"Title: {note['title']}")
-            print(f"Content: {note['note'][:100]}..." if len(note['note']) > 100 else f"Content: {note['note']}")
+            highlighted_content = highlight_search_term(note['note'], query)
+            print(f"Content: {note['note'][:100]}..." if len(note['note']) > 100 else f"Content: {highlighted_content}")
             if note.get('tags'):
                 print(f"Tags: {', '.join(note['tags'])}")
             print("-" * 80)
@@ -732,7 +743,9 @@ class PhonebookCLI:
             print("Failed to add note")
 
     def search_notes(self, query):
-        results = self.notes_manager.search_notes(query)
+        sort_choice = input("Sort results by tags count? (y/n, default: n): ").strip().lower()
+        sort_by_tags = True if sort_choice == 'y' else False
+        results = self.notes_manager.search_notes(query, sort_by_tags_count=sort_by_tags)
         if not results:
             print(f"No notes found for '{query}'")
             return
@@ -740,9 +753,18 @@ class PhonebookCLI:
         print(f"\nSearch Results for '{query}' ({len(results)} found):")
         print("=" * 80)
         for note in results:
+            raw_content = note['note']
+            display_content = f"{raw_content[:100]}..." if len(raw_content) > 100 else raw_content
+            
+            raw_tags = ', '.join(note.get('tags', [])) or 'N/A'
+
+            highlighted_title = highlight_search_term(note['title'], query)
+            highlighted_content = highlight_search_term(display_content, query)
+            highlighted_tags = highlight_search_term(raw_tags, query)
             print(f"ID: {note['id']}")
-            print(f"Title: {note['title']}")
+            print(f"Title: {highlighted_title}")
             print(f"Content: {note['note'][:100]}..." if len(note['note']) > 100 else f"Content: {note['note']}")
+            print(f"Tags: {highlighted_tags}")
             print("-" * 80)
 
     def view_note(self, note_id):
@@ -864,9 +886,30 @@ class PhonebookCLI:
             print(f"Notification days set to: {days}")
         except Exception as e:
             print(f"Error saving settings: {e}")
+    def show_dashboard(self):
+        print("\n" + "=" * 60)
+        print("📊 Database Statistics")
+        print("=" * 60)
 
+        contacts = self.phonebook.contacts
+        total_contacts = len(contacts)
+        contacts_with_birthdays = sum(1 for c in contacts if c.get('birthday', '').strip())
+
+        print(f"👤 CONTACTS:")
+        print(f"   • Total contacts: {total_contacts}")
+        print(f"   • Contacts with saved birthdays: {contacts_with_birthdays}")
+
+        notes = self.notes_manager.notes
+        total_notes = len(notes)
+
+        print(f"\n📝 NOTES:")
+        print(f"   • Total notes: {total_notes}")
+        print("=" * 60)
+        input("\nPress Enter to return to main menu...")
 
 if __name__ == "__main__":
-    import os
-    cli = PhonebookCLI()
-    cli.run()
+    try:
+     cli = PhonebookCLI()
+     cli.run()
+    except KeyboardInterrupt:
+        print("\n\n👋 Application closed via shortcut. Goodbye!")
