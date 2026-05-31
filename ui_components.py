@@ -324,14 +324,32 @@ class TagFilterComponent:
         self.tag_canvas.create_window((0, 0), window=self.checkbox_frame, anchor=tk.NW)
         self.tag_canvas.configure(yscrollcommand=scrollbar.set)
 
+        # Bind mouse wheel events for scrolling
+        self.tag_canvas.bind("<MouseWheel>", self._on_mousewheel)
+        self.tag_canvas.bind("<Button-4>", self._on_mousewheel)
+        self.tag_canvas.bind("<Button-5>", self._on_mousewheel)
+        self.checkbox_frame.bind("<MouseWheel>", self._on_mousewheel)
+        self.checkbox_frame.bind("<Button-4>", self._on_mousewheel)
+        self.checkbox_frame.bind("<Button-5>", self._on_mousewheel)
+
     def toggle(self):
         if self.dropdown_visible:
             self.dropdown_frame.pack_forget()
             self.dropdown_visible = False
         else:
-            self.update_list()
+            # Get current tags from tag_vars (already populated by refresh_notes_list)
+            current_tags = [tag for tag in self.tag_vars.keys() if tag != "__all__"]
+            current_selected = self.get_selected()
+            self.update_list(all_tags=current_tags, selected_tags=current_selected)
             self.dropdown_frame.pack(fill=tk.X, pady=(0, 5), after=self.tag_filter_button.master)
             self.dropdown_visible = True
+
+    def _on_mousewheel(self, event):
+        """Handle mouse wheel scrolling"""
+        if event.num == 5 or event.delta < 0:
+            self.tag_canvas.yview_scroll(1, "units")
+        elif event.num == 4 or event.delta > 0:
+            self.tag_canvas.yview_scroll(-1, "units")
 
     def update_list(self, all_tags=None, selected_tags=None):
         if all_tags is None:

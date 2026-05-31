@@ -379,7 +379,7 @@ Notifications will appear when you open the application."""
             notification_text = "Upcoming Birthdays:\n\n" + "\n".join(upcoming_birthdays)
             self.root.after(100, lambda: messagebox.showinfo("Birthday Notifications", notification_text))
 
-    def refresh_notes_list(self, notes=None):
+    def refresh_notes_list(self, notes=None, update_tag_filter=True):
         """Refresh the notes treeview"""
         for item in self.notes_treeview.get_children():
             self.notes_treeview.delete(item)
@@ -387,6 +387,19 @@ Notifications will appear when you open the application."""
 
         if notes is None:
             notes = self.notes_manager.notes
+
+        # Extract all unique tags from all notes (not just displayed ones)
+        if update_tag_filter:
+            all_tags = set()
+            for note in self.notes_manager.notes:
+                all_tags.update(note.get('tags', []))
+            all_tags = sorted(list(all_tags))
+
+            # Get currently selected tags from the filter
+            selected_tags = self.tag_filter_component.get_selected()
+
+            # Update tag filter with available tags and maintain selection
+            self.tag_filter_component.update_list(all_tags=all_tags, selected_tags=selected_tags)
 
         for note in notes:
             title = note.get('title', 'Untitled')
@@ -628,12 +641,12 @@ Notifications will appear when you open the application."""
         """Apply tag filter to notes"""
         if not selected_tags:
             self.tag_filter_component.set_selected_display([])
-            self.refresh_notes_list()
+            self.refresh_notes_list(update_tag_filter=True)
         else:
             self.tag_filter_component.set_selected_display(selected_tags)
             filtered_notes = [note for note in self.notes_manager.notes
                             if any(tag in note.get('tags', []) for tag in selected_tags)]
-            self.refresh_notes_list(filtered_notes)
+            self.refresh_notes_list(filtered_notes, update_tag_filter=False)
 
     def clear_tag_filter(self):
         """Clear tag filter"""
